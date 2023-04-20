@@ -1,0 +1,16 @@
+Player
+-score
+-player name / character selection
+-moves made
+
+Computer Player
+-Copy of Player 
+
+Gameboard
+-grid tiles
+
+Gamestate
+-score
+-moves made
+-who's turn it is
+
