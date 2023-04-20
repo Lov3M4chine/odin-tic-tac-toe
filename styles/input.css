@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'star-jedi';
+    src: url('../fonts/starjedi/Starjedi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+@font-face {
+    font-family: 'star-jedi-hollow';
+    src: url('../fonts/starjedi/Starjhol.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'star-j-out';
+    src: url('../fonts/starjout/Starjout.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'st-jedi-se';
+    src: url('../fonts/stjedise/STJEDISE.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#jedi {
+    color: rgb(30 64 175);
+    text-shadow:
+     -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+  }
+
+  #sith {
+    color:rgb(153 27 27);
+    text-shadow:
+     -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+  }
