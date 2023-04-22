@@ -12,8 +12,8 @@
         <div id="main-container-background" class="bg-[url('/imgs/main-container-wallpaper.jpg')] bg-center bg-no-repeat mx-auto md:max-w-screen-md h-screen sm:max-w-screen-sm lg:max-w-screen-2xl flex justify-center items-center">
             <div id="character-select-main-container" class="flex flex-col items-center border-4 border-transparent bg-slate-900 bg-opacity-95 border-solid rounded-xl w-9/12 h-auto ">
                 <div class="text-5xl text-white p-3 font-starjout max-sm:text-3xl">Star Wars Tic-Tac-Toe</div>
-                <div id="character-select-sub-container" class="flex flex-col items-center border-4 border-transparent rounded-xl bg-gradient-to-br from-blue-800 to-red-800 bg-clip-padding m-4">
-                    <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold">Choose Your Character</div>
+                <div id="character-select-sub-container" class="hidden flex flex-col items-center border-4 border-transparent rounded-xl bg-gradient-to-br from-blue-800 to-red-800 bg-clip-padding m-4">
+                    <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold">Choose Your Destiny</div>
                         <div class="flex justify-between w-full h-full">
                             <div class="w-6/12 h-full flex flex-col items-center">
                                 <div class="flex justify-between gap-4">
@@ -77,6 +77,58 @@
                     <button class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player vs player</button>
                     <button class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player vs computer</button>
                     <button class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-4xl p-2 text-white box-border my-4 hover:bg-blue-900 transition-transform duration-200 transform hover:scale-125 ">play</button>
+                </div>
+                <div id="gameboard-sub-container" class="flex flex-col items-center border-4 border-transparent bg-[url('/imgs/stars.jpg')] bg-center bg-no-repeat mx-autorounded-xl bg-clip-padding m-4">
+                    <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold">may the force be with you</div>
+                        <div class="flex justify-between">
+                            <div id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">jedi score: </div>
+                            <div id="" class="hidden text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">heroes score: </div>
+                            <div id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">sith score: </div>
+                            <div id="" class="hidden text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">villains score: </div>
+                        </div>
+                        <div id="gameboard" class="grid grid-cols-3 grid-rows-3">
+                            <div class="flex justify-center items-center border-4 border-r-2 border-b-2 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-2 border-t-4 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-4 border-l-2 border-b-2 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-2 border-l-4 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-2 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-2 border-r-4 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-4 border-t-2 border-r-2 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-2 border-b-4 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                            <div class="flex justify-center items-center border-4 border-l-2 border-t-2 p-2 border-white">
+                                <button class=""></button>
+                                    <img src="./imgs/maul.png" alt="maul" class="hover:bg-red-900 hover:rounded-lg">
+                            </div>
+                        </div>
+                </div>
+                <div class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player one's turn</div>
+                <div class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player two's turn</div>
+                <div class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">computer's turn</div>
+            </div>
                 </div>
             </div>
             <div id="game-container"></div>
