@@ -10,9 +10,9 @@
 <body class="box-border">
     <div id="main-container" class="bg-slate-900 w-screen">
         <div id="main-container-background" class="bg-[url('/imgs/main-container-wallpaper.jpg')] bg-center bg-no-repeat mx-auto min-h-screen max-sm:max-w-screen-sm max-lg:max-w-screen-2xl flex justify-center items-center">
-            <div id="character-select-main-container" class="flex flex-col items-center border-4 border-transparent bg-slate-900 bg-opacity-95 border-solid rounded-xl w-9/12 h-full lg:max-w-screen-xl max-sm:w-11/12">
-                <div class="text-5xl text-white p-3 font-starjout max-sm:text-3xl">Star Wars Tic-Tac-Toe</div>
-                <div id="character-select-sub-container" class="hidden flex flex-col items-center border-4 border-transparent rounded-xl bg-gradient-to-br from-blue-800 to-red-800 bg-clip-padding m-4">
+            <div id="character-select-main-container" class="flex flex-col items-center border-4 border-transparent bg-slate-900 bg-opacity-95 border-solid rounded-xl w-9/12 h-full lg:max-w-screen-xl max-sm:w-11/12 max-sm:min-w-fit">
+                <div class="text-5xl text-white p-3 font-starjout max-sm:text-3xl whitespace-nowrap">Star Wars Tic-Tac-Toe</div>
+                <div id="character-select-sub-container" class="flex flex-col items-center border-4 border-transparent rounded-xl bg-gradient-to-br from-blue-800 to-red-800 bg-clip-padding m-4">
                     <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold">Choose Your Destiny</div>
                         <div class="flex justify-between w-full h-full">
                             <div class="w-6/12 h-full flex flex-col items-center">
@@ -20,7 +20,7 @@
                                     <button id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 hover:bg-red-900 transition-transform duration-200 transform hover:scale-110">jedi</button>
                                     <button id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 hover:bg-red-900 transition-transform duration-200 transform hover:scale-110">heroes</button>
                                 </div>
-                                <div id="" class="w-11/12 h-11/12 border-slate-900 border-2 rounded-lg m-4 flex flex-wrap box-border">
+                                <div id="" class="w-11/12 h-11/12 md:w-9/12 md:h-9/12 border-slate-900 border-2 rounded-lg m-4 flex flex-wrap box-border">
                                     <button></button>
                                         <img src="./imgs/luke.png" alt="luke" class="w-6/12 h-6/12 p-2 hover:bg-blue-900 hover:rounded-lg">
                                     <button></button>
@@ -49,7 +49,7 @@
                                     <button id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">sith</button>
                                     <button id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">villains</button>
                                 </div>
-                                <div id="" class="w-11/12 h-11/12 border-slate-900 border-2 rounded-lg m-4 flex flex-wrap">
+                                <div id="" class="w-11/12 h-11/12 md:w-9/12 md:h-9/12 border-slate-900 border-2 rounded-lg m-4 flex flex-wrap">
                                     <button></button>
                                         <img src="./imgs/maul.png" alt="maul" class="w-6/12 h-6/12 p-2 hover:bg-red-900 hover:rounded-lg">
                                     <button></button>
@@ -74,11 +74,11 @@
                                 <div class="hidden font-starjout font-bold text-xl p-2 text-slate-900 bg-gradient-to-br from-red-900 to-red-800 rounded-lg">computer</div>
                             </div>
                         </div>
-                    <button class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player vs player</button>
+                    <button class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110 mt-8">player vs player</button>
                     <button class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110">player vs computer</button>
                     <button class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-4xl p-2 text-white box-border my-4 hover:bg-blue-900 transition-transform duration-200 transform hover:scale-125 ">play</button>
                 </div>
-                <div id="gameboard-sub-container" class="flex flex-col items-center border-4 border-transparent bg-[url('/imgs/stars.jpg')] bg-center bg-no-repeat mx-auto rounded-xl bg-clip-padding m-4 gap-4 h-full">
+                <div id="gameboard-sub-container" class="hidden flex flex-col items-center border-4 border-transparent bg-[url('/imgs/stars.jpg')] bg-center bg-no-repeat mx-auto rounded-xl bg-clip-padding m-4 gap-4 h-full">
                     <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold whitespace-nowrap">may the force be with you</div>
                     <div class="flex justify-between w-full p-2">
                         <div id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">jedi score: </div>
