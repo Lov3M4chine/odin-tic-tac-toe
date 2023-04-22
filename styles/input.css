@@ -30,7 +30,7 @@
     font-style: normal;
 }
 
-#jedi {
+.jedi-text {
     color: rgb(30 64 175);
     text-shadow:
      -1px -1px 0 #000,  
@@ -39,7 +39,7 @@
        1px 1px 0 #000;
   }
 
-  #sith {
+  .sith-text {
     color:rgb(153 27 27);
     text-shadow:
      -1px -1px 0 #000,  
