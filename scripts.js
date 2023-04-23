@@ -36,10 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
         playMode = "playerVsComputer";
         playerVsComputerButton.classList.remove("hidden");
         playerVsPlayerButton.classList.add("hidden");
+        console.log(`Play mode set to player vs computer`)
       } else {
         playMode = "playerVsPlayer";
         playerVsPlayerButton.classList.remove("hidden");
         playerVsComputerButton.classList.add("hidden");
+        console.log(`Play mode set to player vs player`)
       }
     }
 
@@ -96,17 +98,30 @@ document.addEventListener("DOMContentLoaded", function () {
   })();
 
   let characterSelectModule = (function() {
-    let goodCharacters = {
-        luke: document.getElementById("luke"),
-        anakin: document.getElementById("anakin"),
-        ben: document.getElementById("ben"),
-        ahsoka: document.getElementById("ahsoka"),
-        chewy: document.getElementById("chewy"),
-        ewoks: document.getElementById("ewoks"),
-        r2: document.getElementById("r2"),
-        solo: document.getElementById("solo"),
+    const jediButtons = document.querySelectorAll('#jedi-characters button');
+    const heroButtons = document.querySelectorAll('#hero-characters button');
+    const sithButtons = document.querySelectorAll('#sith-characters button');
+    const villainButtons = document.querySelectorAll('#villain-characters button');
 
-      };
+    const jediCharacters = {};
+    jediButtons.forEach(button => {
+        jediCharacters[button.id] = button;
+    });
+
+    const heroCharacters = {};
+    heroButtons.forEach(button => {
+        heroCharacters[button.id] = button;
+    });
+
+    const sithCharacters = {};
+    sithButtons.forEach(button => {
+        sithCharacters[button.id] = button;
+    });
+
+    const villainCharacters = {};
+    villainButtons.forEach(button => {
+        villainCharacters[button.id] = button;
+    });
 
     let evilCharacters = {
         maul: document.getElementById("maul"),
@@ -119,23 +134,31 @@ document.addEventListener("DOMContentLoaded", function () {
         tarkin: document.getElementById("tarkin")
     }
 
-    function assignGoodCharacter(character) {
-        playerOne.characterSelected = character;
-        console.log(playerOne.characterSelected)
+    function assignCharacter (character) {
+        if (character in jediCharacters || character in heroCharacters) {
+            playerOne.characterSelected = character;
+        } else {
+            playerTwo.characterSelected = character;
+        }
+        console.log(`Player One: ${playerOne.characterSelected}`)
+        console.log(`Player Two: ${playerTwo.characterSelected}`)
     }
 
-    function assignEvilCharacter(character) {
-        playerTwo.characterSelected = character;
-        console.log(playerTwo.characterSelected);
+    for (let character in jediCharacters) {
+        jediCharacters[character].addEventListener("click", () => assignCharacter(character))
     }
 
-    for (let key in goodCharacters) {
-        goodCharacters[key].addEventListener("click", () => assignGoodCharacter(key));
-    }
-    for (let key in evilCharacters) {
-        evilCharacters[key].addEventListener("click", () => assignEvilCharacter(key))
+    for (let character in heroCharacters) {
+        heroCharacters[character].addEventListener("click", () => assignCharacter(character))
     }
 
+    for (let character in sithCharacters) {
+        sithCharacters[character].addEventListener("click", () => assignCharacter(character))
+    }
 
-  })
+    for (let character in villainCharacters) {
+        villainCharacters[character].addEventListener("click", () => assignCharacter(character))
+    }
+
+  })();
 });
