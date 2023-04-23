@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     characterSelected: undefined,
   };
 
-  function assignPlayMode() {
+  let assignPlayModeModule = (function() {
     let playerVsPlayerButton = document.getElementById("player-vs-player");
     let playerVsComputerButton = document.getElementById("player-vs-computer");
     let playMode = "playerVsPlayer";
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     playerVsPlayerButton.addEventListener("click", setPlayMode);
     playerVsComputerButton.addEventListener("click", setPlayMode);
-  }
+  })();
 
   let jediHeroToggleModule = (function () {
     let jediButton = document.getElementById("jedi");
@@ -95,6 +95,47 @@ document.addEventListener("DOMContentLoaded", function () {
     villainButton.addEventListener("click", villainToggle);
   })();
 
-  function characterSelection() {}
-  assignPlayMode();
+  let characterSelectModule = (function() {
+    let goodCharacters = {
+        luke: document.getElementById("luke"),
+        anakin: document.getElementById("anakin"),
+        ben: document.getElementById("ben"),
+        ahsoka: document.getElementById("ahsoka"),
+        chewy: document.getElementById("chewy"),
+        ewoks: document.getElementById("ewoks"),
+        r2: document.getElementById("r2"),
+        solo: document.getElementById("solo"),
+
+      };
+
+    let evilCharacters = {
+        maul: document.getElementById("maul"),
+        dooku: document.getElementById("dooku"),
+        sideous: document.getElementById("sideous"),
+        vader: document.getElementById("vader"),
+        boba: document.getElementById("boba"),
+        grievous: document.getElementById("grievous"),
+        stormtrooper: document.getElementById("stormtrooper"),
+        tarkin: document.getElementById("tarkin")
+    }
+
+    function assignGoodCharacter(character) {
+        playerOne.characterSelected = character;
+        console.log(playerOne.characterSelected)
+    }
+
+    function assignEvilCharacter(character) {
+        playerTwo.characterSelected = character;
+        console.log(playerTwo.characterSelected);
+    }
+
+    for (let key in goodCharacters) {
+        goodCharacters[key].addEventListener("click", () => assignGoodCharacter(key));
+    }
+    for (let key in evilCharacters) {
+        evilCharacters[key].addEventListener("click", () => assignEvilCharacter(key))
+    }
+
+
+  })
 });
