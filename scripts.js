@@ -210,22 +210,23 @@ let assignPlayModeModule = (function () {
             playerOneTurn.classList.add("hidden");
             playerTwoTurn.classList.remove("hidden");
             gridElement.forEach((element) => {
-                element.classList.add("hover:bg-blue-900");
-                element.classList.remove("hover:bg-red-900");
-            });
-        }
-        if (playerTurn === "playerTwo") {
-            playerOneTurn.classList.remove("hidden");
-            playerTwoTurn.classList.add("hidden");
-            gridElement.forEach((element) => {
                 element.classList.remove("hover:bg-blue-900");
                 element.classList.add("hover:bg-red-900");
             });
+            playerTurn = "playerTwo";
+        } else {
+            playerOneTurn.classList.remove("hidden");
+            playerTwoTurn.classList.add("hidden");
+            gridElement.forEach((element) => {
+                element.classList.add("hover:bg-blue-900");
+                element.classList.remove("hover:bg-red-900");
+            });
+            playerTurn = "playerOne";
         }
     }    
 
-    gridElement.forEach((gridElement) => {
-        gridElement.addEventListener("click", switchPlayerTurn);
+    gridElement.forEach((element) => {
+        element.addEventListener("click", switchPlayerTurn);
     });
   })();
 });
