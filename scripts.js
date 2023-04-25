@@ -308,16 +308,54 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function initiateWinState(playerOne, playerTwo, winner, gameBoardSubContainer) {
+            const goodWin = document.getElementById("good-win");
+            const evilWin = document.getElementById("evil-win");
+            const tie = document.getElementById("tie");
+          
             if (winner === "tie") {
               gameBoardSubContainer.classList.add("hidden");
+              tie.classList.remove("hidden");      
+              const tieImages = [
+                "./imgs/tie-one.jpg",
+                "./imgs/tie-two.jpg",
+                "./imgs/tie-three.jpg",
+              ];          
+              const randomImageIndex = Math.floor(Math.random() * tieImages.length);
+              const img = document.createElement("img");
+              img.src = tieImages[randomImageIndex];
+              img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+              tie.appendChild(img);
             } else {
-              const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;           
+              const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;
+          
               if (winningPlayer.characterSelected.morality === "good") {
                 gameBoardSubContainer.classList.add("hidden");
+                goodWin.classList.remove("hidden");
+                const goodWinImages = [
+                  "./imgs/good-win-one.jpg",
+                  "./imgs/good-win-two.jpg",
+                  "./imgs/good-win-three.jpg",
+                ];          
+                const randomImageIndex = Math.floor(Math.random() * goodWinImages.length);
+                const img = document.createElement("img");
+                img.src = goodWinImages[randomImageIndex];
+                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+                goodWin.appendChild(img);
               } else if (winningPlayer.characterSelected.morality === "evil") {
                 gameBoardSubContainer.classList.add("hidden");
+                evilWin.classList.remove("hidden");
+                const evilWinImages = [
+                    "./imgs/evil-win-one.jpg",
+                    "./imgs/evil-win-two.jpg",
+                    "./imgs/evil-win-three.jpg",
+                  ];          
+                  const randomImageIndex = Math.floor(Math.random() * evilWinImages.length);
+                  const img = document.createElement("img");
+                  img.src = evilWinImages[randomImageIndex];
+                  img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+                  evilWin.appendChild(img);
               }
             }
-        }
+          }
     })(characterSelectModule.playerOne, characterSelectModule.playerTwo);
 });
