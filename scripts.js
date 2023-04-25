@@ -91,10 +91,10 @@ document.addEventListener("DOMContentLoaded", function () {
     })();
 
     let characterSelectModule = (function () {
-        let playerOne = {};
-        let playerTwo = {};
-        let playerComputer = {};
-
+        let playerOne = {score: 0};
+        let playerTwo = {score: 0};
+        let playerComputer = {score: 0};
+        const characters = {};
         const characterButtons = document.querySelectorAll(".character");
         const jediButtons = Array.from(
         document.querySelectorAll("#jedi-characters button")
@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll("#villain-characters button")
         );
 
-        const characters = {};
         characterButtons.forEach((button) => {
         let name, faction, morality;
         if (jediButtons.includes(button)) {
@@ -140,16 +139,13 @@ document.addEventListener("DOMContentLoaded", function () {
         playerTwo.characterSelected = characters.vader;
 
         function assignCharacter(character) {
+            const highlight =  ["border-2", "border-gold", "rounded"]
         if (character.morality === "good") {
             if (playerOne.characterSelected) {
-            playerOne.characterSelected.button.classList.remove(
-                "border-2",
-                "border-gold",
-                "rounded"
-            );
+            playerOne.characterSelected.button.classList.remove(...highlight);
             }
             playerOne.characterSelected = character;
-            character.button.classList.add("border-2", "border-gold", "rounded");
+            character.button.classList.add(...highlight);
             console.log(
             `Player One Character Selected: ${JSON.stringify(
                 playerOne.characterSelected
@@ -157,14 +153,10 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         } else {
             if (playerTwo.characterSelected) {
-            playerTwo.characterSelected.button.classList.remove(
-                "border-2",
-                "border-gold",
-                "rounded"
-            );
+            playerTwo.characterSelected.button.classList.remove(...highlight);
             }
             playerTwo.characterSelected = character;
-            character.button.classList.add("border-2", "border-gold", "rounded");
+            character.button.classList.add(...highlight);
             console.log(
             `Player Two Character Selected: ${JSON.stringify(
                 playerTwo.characterSelected
@@ -207,6 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
             B1: '-', B2: '-', B3: '-',
             C1: '-', C2: '-', C3: '-'
         };
+        let count = 0;
 
         function showGameBoard() {
         gameBoardSubContainer.classList.remove("hidden");
@@ -215,147 +208,214 @@ document.addEventListener("DOMContentLoaded", function () {
 
         playButton.addEventListener("click", showGameBoard);
 
-        function switchPlayerTurn() {
-            if (playerTurn === "playerOne") {
-                playerOneTurn.classList.add("hidden");
-                playerTwoTurn.classList.remove("hidden");
-                gridElement.forEach((element) => {
-                    if (element.classList.contains("hover:bg-blue-900")) {
-                        element.classList.remove("hover:bg-blue-900");
-                        element.classList.add("hover:bg-red-900");
+        let checkWinnerModule = (function () {
+            function checkWinner(gameBoard, count) {
+                const winCombinations = [
+                ["A1", "A2", "A3"],
+                ["B1", "B2", "B3"],
+                ["C1", "C2", "C3"],
+                ["A1", "B1", "C1"],
+                ["A2", "B2", "C2"],
+                ["A3", "B3", "C3"],
+                ["A1", "B2", "C3"],
+                ["A3", "B2", "C1"]
+                ];
+            
+                for (let combination of winCombinations) {
+                    if (
+                        gameBoard[combination[0]] !== "-" &&
+                        gameBoard[combination[0]] === gameBoard[combination[1]] &&
+                        gameBoard[combination[0]] === gameBoard[combination[2]]
+                    ) { 
+                        return gameBoard[combination[0]];
                     }
-                });
-                playerTurn = "playerTwo";
-            } else {
-                playerOneTurn.classList.remove("hidden");
-                playerTwoTurn.classList.add("hidden");
-                gridElement.forEach((element) => {
-                    if (element.classList.contains("hover:bg-red-900")) {
-                        element.classList.add("hover:bg-blue-900");
-                        element.classList.remove("hover:bg-red-900");
-                    }
-                });
-                playerTurn = "playerOne";
-            }
-        }
-
-        let count = 0;
-
-        function addPlayerMove({ playerOne, playerTwo }, element) {
-            const elementID = element.id;
+                }
         
-            if (playerTurn === "playerOne") {
-                const img = document.createElement("img");
-                img.src = playerOne.characterSelected.image;
-                img.alt = playerOne.characterSelected.name;
-                element.appendChild(img);
-                element.classList.remove("hover:bg-blue-900");
-                gameBoard[elementID] = "playerOne";
-                console.log(gameBoard);
-            } else {
-                const img = document.createElement("img");
-                img.src = playerTwo.characterSelected.image;
-                img.alt = playerTwo.characterSelected.name;
-                element.appendChild(img);
-                element.classList.remove("hover:bg-red-900");
-                gameBoard[elementID] = "playerTwo";
-                console.log(gameBoard);
-            }
-            return count += 1;
-        }
-
-        gridElement.forEach((element) => {
-            element.addEventListener("click", () => {
-                let winner;
-                addPlayerMove({ playerOne, playerTwo }, element);
-                winner = checkWinner(gameBoard, count);
+                if (count === 9) {
+                    return "tie";
+                }
         
-                if (winner) {
-                    initiateWinState(playerOne, playerTwo, winner, gameBoardSubContainer);
+                return null;
+            }
+
+            function initiateWinState(playerOne, playerTwo, winner) {
+                if (winner === "tie") {
+                    tieWinner();
                 } else {
-                    switchPlayerTurn();
+                const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;
+                if (winningPlayer.characterSelected.morality === "good") {
+                    winningPlayer.score += 1
+                    goodWinner();
+                } else if (winningPlayer.characterSelected.morality === "evil") {
+                    winningPlayer.score += 1
+                    evilWinner();
                 }
-            });
-        });
-
-        function checkWinner(gameBoard, count) {
-            const winCombinations = [
-            ["A1", "A2", "A3"],
-            ["B1", "B2", "B3"],
-            ["C1", "C2", "C3"],
-            ["A1", "B1", "C1"],
-            ["A2", "B2", "C2"],
-            ["A3", "B3", "C3"],
-            ["A1", "B2", "C3"],
-            ["A3", "B2", "C1"]
-            ];
-        
-            for (let combination of winCombinations) {
-                if (
-                    gameBoard[combination[0]] !== "-" &&
-                    gameBoard[combination[0]] === gameBoard[combination[1]] &&
-                    gameBoard[combination[0]] === gameBoard[combination[2]]
-                ) { 
-                    return gameBoard[combination[0]];
                 }
             }
-    
-            if (count === 9) {
-                return "tie";
-            }
-    
-            return null;
-        }
 
-        function initiateWinState(playerOne, playerTwo, winner, gameBoardSubContainer) {
-            const goodWin = document.getElementById("good-win");
-            const evilWin = document.getElementById("evil-win");
-            const tie = document.getElementById("tie");
-          
-            if (winner === "tie") {
-              gameBoardSubContainer.classList.add("hidden");
-              tie.classList.remove("hidden");      
-              const tieImages = [
-                "./imgs/tie-one.jpg",
-                "./imgs/tie-two.jpg",
-                "./imgs/tie-three.jpg",
-              ];          
-              const randomImageIndex = Math.floor(Math.random() * tieImages.length);
-              const img = document.createElement("img");
-              img.src = tieImages[randomImageIndex];
-              img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
-              tie.appendChild(img);
-            } else {
-              const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;
-          
-              if (winningPlayer.characterSelected.morality === "good") {
+            function tieWinner () {
+                const tieImages = [
+                    "./imgs/tie-one.jpg",
+                    "./imgs/tie-two.jpg",
+                    "./imgs/tie-three.jpg",
+                ];   
+                const randomImageIndex = Math.floor(Math.random() * tieImages.length);
+                const tie = document.getElementById("tie");
+                gameBoardSubContainer.classList.add("hidden");
+                tie.classList.remove("hidden");      
+                const img = document.createElement("img");
+                img.src = tieImages[randomImageIndex];
+                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+                tie.appendChild(img);
+            }
+
+            function goodWinner() {
+                const goodWinImages = [
+                    "./imgs/good-win-one.jpg",
+                    "./imgs/good-win-two.jpg",
+                    "./imgs/good-win-three.jpg",
+                    ];  
+                const randomImageIndex = Math.floor(Math.random() * goodWinImages.length);
+                const goodWin = document.getElementById("good-win");
                 gameBoardSubContainer.classList.add("hidden");
                 goodWin.classList.remove("hidden");
-                const goodWinImages = [
-                  "./imgs/good-win-one.jpg",
-                  "./imgs/good-win-two.jpg",
-                  "./imgs/good-win-three.jpg",
-                ];          
-                const randomImageIndex = Math.floor(Math.random() * goodWinImages.length);
                 const img = document.createElement("img");
                 img.src = goodWinImages[randomImageIndex];
                 img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
                 goodWin.appendChild(img);
-              } else if (winningPlayer.characterSelected.morality === "evil") {
-                gameBoardSubContainer.classList.add("hidden");
-                evilWin.classList.remove("hidden");
+                
+            }
+
+            function evilWinner() {
                 const evilWinImages = [
                     "./imgs/evil-win-one.jpg",
                     "./imgs/evil-win-two.jpg",
                     "./imgs/evil-win-three.jpg",
-                  ];          
-                  const randomImageIndex = Math.floor(Math.random() * evilWinImages.length);
-                  const img = document.createElement("img");
-                  img.src = evilWinImages[randomImageIndex];
-                  img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
-                  evilWin.appendChild(img);
-              }
+                ];   
+                const randomImageIndex = Math.floor(Math.random() * evilWinImages.length);
+                const evilWin = document.getElementById("evil-win");
+                gameBoardSubContainer.classList.add("hidden");
+                evilWin.classList.remove("hidden");
+                const img = document.createElement("img");
+                img.src = evilWinImages[randomImageIndex];
+                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+                evilWin.appendChild(img);
             }
-          }
+
+            function updateScoreBoard() {
+                const goodScore = document.getElementById('good-score');
+                const evilScore = document.getElementById('evil-score');
+            
+                goodScore.textContent = `light-side score: ${playerOne.score}`;
+                evilScore.textContent = `dark-side score: ${playerTwo.score}`;
+            }
+
+            return {
+                checkWinner: checkWinner,
+                initiateWinState: initiateWinState,
+                updateScoreBoard: updateScoreBoard
+            };
+        })();
+
+        let playerMovementModule = (function (checkWinner, initiateWinState) {
+            let winner;
+
+            function switchPlayerTurn() {
+                if (playerTurn === "playerOne") {
+                    playerOneTurn.classList.add("hidden");
+                    playerTwoTurn.classList.remove("hidden");
+                    gridElement.forEach((element) => {
+                        if (element.classList.contains("hover:bg-blue-900")) {
+                            element.classList.remove("hover:bg-blue-900");
+                            element.classList.add("hover:bg-red-900");
+                        }
+                    });
+                    playerTurn = "playerTwo";
+                } else {
+                    playerOneTurn.classList.remove("hidden");
+                    playerTwoTurn.classList.add("hidden");
+                    gridElement.forEach((element) => {
+                        if (element.classList.contains("hover:bg-red-900")) {
+                            element.classList.add("hover:bg-blue-900");
+                            element.classList.remove("hover:bg-red-900");
+                        }
+                    });
+                    playerTurn = "playerOne";
+                }
+            }
+
+            function initializePlayerMove({playerOne, playerTwo}, element) {            
+                if (playerTurn === "playerOne") {
+                    const img = document.createElement("img");
+                    img.src = playerOne.characterSelected.image;
+                    img.alt = playerOne.characterSelected.name;
+                    img.class = ("character-image");
+                    element.appendChild(img);
+                    element.classList.remove("hover:bg-blue-900");
+                    gameBoard[element.id] = "playerOne";
+                    console.log(gameBoard);
+                } else {
+                    const img = document.createElement("img");
+                    img.src = playerTwo.characterSelected.image;
+                    img.alt = playerTwo.characterSelected.name;
+                    img.class = ("character-image");
+                    element.appendChild(img);
+                    element.classList.remove("hover:bg-red-900");
+                    gameBoard[element.id] = "playerTwo";
+                    console.log(gameBoard);
+                }
+                count += 1;
+            }
+
+            (function addEventListenersToGrid() {
+                gridElement.forEach((element) => {
+                    element.addEventListener("click", () => {
+                        initializePlayerMove({ playerOne, playerTwo }, element);
+                        winner = checkWinner(gameBoard, count);            
+                        if (winner) {
+                            initiateWinState(playerOne, playerTwo, winner);
+                        } else {
+                            switchPlayerTurn();
+                            return element;
+                        }
+                    });
+                });
+            })();
+        })(checkWinnerModule.checkWinner, checkWinnerModule.initiateWinState, checkWinnerModule.updateScoreBoard);
     })(characterSelectModule.playerOne, characterSelectModule.playerTwo);
+
+    let resetModule = (function () {
+        const resetButton = document.getElementById("reset-button");
+        resetButton.addEventListener("click", reset);
+
+        function reset () {
+            (function clearCharacterSelection () {
+                playerOne.characterSelected = characters.luke;
+                playerTwo.characterSelected = characters.vader;
+            })();
+
+            (function clearGameBoard () {
+                const characterImage = element.querySelector('.character-image');
+
+                gameBoard = {
+                    A1: '-', A2: '-', A3: '-',
+                    B1: '-', B2: '-', B3: '-',
+                    C1: '-', C2: '-', C3: '-'
+                };
+
+                gridElement.forEach((element) => {
+                    if (characterImage) {
+                        element.removeChild(characterImage);
+                    }
+                });
+
+                playerTurn = "playerOne";
+            })();
+
+            (function showCharacterSelect () {
+                gameBoardSubContainer.classList.add("hidden");
+                characterSelectSubContainer.classList.remove("hidden");
+            })();
+        }
+    })();
 });

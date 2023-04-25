@@ -97,10 +97,8 @@
                 <div id="gameboard-sub-container" class="hidden flex flex-col items-center border-4 border-transparent bg-[url('/imgs/stars.jpg')] bg-center bg-no-repeat mx-auto rounded-xl bg-clip-padding m-4 gap-4 h-full">
                     <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold whitespace-nowrap">may the force be with you</div>
                     <div class="flex justify-between w-full p-2">
-                        <div id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">jedi score: </div>
-                        <div id="" class="hidden text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">heroes score: </div>
-                        <div id="" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">sith score: </div>
-                        <div id="" class="hidden text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">villains score: </div>
+                        <div id="good-score" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl jedi-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">light-side score: </div>
+                        <div id="evil-score" class="text-xl p-1 pt-0 font-jedi max-sm:text-xl sith-text border-slate-900 border-2 rounded-lg bg-slate-900 whitespace-nowrap">dark-side score: </div>
                     </div>
                     <div id="gameboard" class="grid grid-cols-3 grid-rows-3">
                         <div class="flex justify-center items-center border-4 border-r-2 border-b-2  border-white w-40 h-40 max-sm:w-32 max-sm:h-32">
@@ -140,8 +138,8 @@
                             </button>
                         </div>
                     </div>
-                    <div id="player-one-turn" class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110 mb-2">player one's turn</div>
-                    <div id="player-two-turn" class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110 mb-2">player two's turn</div>
+                    <div id="player-one-turn" class="border-4 border-slate-900 rounded-xl bg-blue-900 font-jedihollow font-bold text-xl p-2 text-white mb-2">player one's turn</div>
+                    <div id="player-two-turn" class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white">player two's turn</div>
                     <div id="computer-turn" class="hidden border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-xl p-2 text-white hover:bg-blue-900 transition-transform duration-200 transform hover:scale-110 mb-2">computer's turn</div>
                 </div>
                 <div id="good-win" class="hidden flex flex-col items-center">
@@ -154,7 +152,7 @@
                 </div>
                 <div id="tie" class="hidden flex flex-col items-center">
                     <div class="text-3xl text-white p-2 font-jedihollow max-sm:text-2xl font-bold whitespace-nowrap rounded bg-gradient-to-br from-blue-800 to-red-800">it's a trap! i mean...it's a tie!!!</div>
-                    <button id="play" class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-3xl p-1 mt-2 text-white box-border hover:bg-blue-900 transition-transform duration-200 transform hover:scale-125 ">play again?</button>
+                    <button id="reset-button" class="border-4 border-slate-900 rounded-xl bg-red-900 font-jedihollow font-bold text-3xl p-1 mt-2 text-white box-border hover:bg-blue-900 transition-transform duration-200 transform hover:scale-125 ">play again?</button>
                 </div>
                 
             </div>
