@@ -17,16 +17,18 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   let playerOne = {
-    score: undefined,
     characterSelected: undefined,
   };
 
   let playerTwo = {
-    score: undefined,
     characterSelected: undefined,
   };
 
-  let assignPlayModeModule = (function() {
+  let playerComputer = {
+    characterSelected: undefined,
+  };
+
+  let assignPlayModeModule = (function () {
     let playerVsPlayerButton = document.getElementById("player-vs-player");
     let playerVsComputerButton = document.getElementById("player-vs-computer");
     let playMode = "playerVsPlayer";
@@ -36,12 +38,12 @@ document.addEventListener("DOMContentLoaded", function () {
         playMode = "playerVsComputer";
         playerVsComputerButton.classList.remove("hidden");
         playerVsPlayerButton.classList.add("hidden");
-        console.log(`Play mode set to player vs computer`)
+        console.log(`Play mode set to player vs computer`);
       } else {
         playMode = "playerVsPlayer";
         playerVsPlayerButton.classList.remove("hidden");
         playerVsComputerButton.classList.add("hidden");
-        console.log(`Play mode set to player vs player`)
+        console.log(`Play mode set to player vs player`);
       }
     }
 
@@ -56,26 +58,20 @@ document.addEventListener("DOMContentLoaded", function () {
     let heroCharacters = document.getElementById("hero-characters");
 
     function jediToggle() {
-      if (jediCharacters.classList.contains("hidden")) {
-        jediCharacters.classList.remove("hidden");
-      }
-      if (!heroCharacters.classList.contains("hidden")) {
-        heroCharacters.classList.add("hidden");
-      }
+      jediCharacters.classList.remove("hidden");
+      heroCharacters.classList.add("hidden");
+      heroButton.classList.remove("border-gold");
+      jediButton.classList.add("border-gold");
     }
     function heroToggle() {
-      if (!jediCharacters.classList.contains("hidden")) {
-        jediCharacters.classList.add("hidden");
-      }
-      if (heroCharacters.classList.contains("hidden")) {
-        heroCharacters.classList.remove("hidden");
-      }
+      jediCharacters.classList.add("hidden");
+      heroCharacters.classList.remove("hidden");
+      jediButton.classList.remove("border-gold");
+      heroButton.classList.add("border-gold");
     }
 
     jediButton.addEventListener("click", jediToggle);
     heroButton.addEventListener("click", heroToggle);
-
-    return;
   })();
 
   let sithVillainToggleModule = (function () {
@@ -87,78 +83,78 @@ document.addEventListener("DOMContentLoaded", function () {
     function sithToggle() {
       sithCharacters.classList.remove("hidden");
       villainCharacters.classList.add("hidden");
+      sithButton.classList.add("border-gold");
+      villainButton.classList.remove("border-gold");
     }
     function villainToggle() {
       sithCharacters.classList.add("hidden");
       villainCharacters.classList.remove("hidden");
+      sithButton.classList.remove("border-gold");
+      villainButton.classList.add("border-gold");
     }
 
     sithButton.addEventListener("click", sithToggle);
     villainButton.addEventListener("click", villainToggle);
   })();
 
-  let characterSelectModule = (function() {
-    const jediButtons = document.querySelectorAll('#jedi-characters button');
-    const heroButtons = document.querySelectorAll('#hero-characters button');
-    const sithButtons = document.querySelectorAll('#sith-characters button');
-    const villainButtons = document.querySelectorAll('#villain-characters button');
+  let characterSelectModule = (function () {
+    const characterButtons = document.querySelectorAll(".character");
+    const jediButtons = Array.from(document.querySelectorAll("#jedi-characters button"));
+    const heroButtons = Array.from(document.querySelectorAll("#hero-characters button"));
+    const sithButtons = Array.from(document.querySelectorAll("#sith-characters button"));
+    const villainButtons = Array.from(document.querySelectorAll("#villain-characters button"));
 
-    const jediCharacters = {};
-    jediButtons.forEach(button => {
-        jediCharacters[button.id] = button;
-    });
-
-    const heroCharacters = {};
-    heroButtons.forEach(button => {
-        heroCharacters[button.id] = button;
-    });
-
-    const sithCharacters = {};
-    sithButtons.forEach(button => {
-        sithCharacters[button.id] = button;
-    });
-
-    const villainCharacters = {};
-    villainButtons.forEach(button => {
-        villainCharacters[button.id] = button;
-    });
-
-    let evilCharacters = {
-        maul: document.getElementById("maul"),
-        dooku: document.getElementById("dooku"),
-        sideous: document.getElementById("sideous"),
-        vader: document.getElementById("vader"),
-        boba: document.getElementById("boba"),
-        grievous: document.getElementById("grievous"),
-        stormtrooper: document.getElementById("stormtrooper"),
-        tarkin: document.getElementById("tarkin")
-    }
-
-    function assignCharacter (character) {
-        if (character in jediCharacters || character in heroCharacters) {
-            playerOne.characterSelected = character;
-        } else {
-            playerTwo.characterSelected = character;
+    const characters = {};
+    characterButtons.forEach((button) => {
+        let name, faction, morality;
+        if (jediButtons.includes(button)) {
+            name = `${button.id}`;
+            faction = "jedi";
+            morality = "good";
+        } else if (heroButtons.includes(button)) {
+            name = `${button.id}`;
+            faction = "hero";
+            morality = "good";
+        } else if (sithButtons.includes(button)) {
+            name = `${button.id}`;
+            faction = "sith";
+            morality = "evil";
+        } else if (villainButtons.includes(button)) {
+            name = `${button.id}`;
+            faction = "villain";
+            morality = "evil";
         }
-        console.log(`Player One: ${playerOne.characterSelected}`)
-        console.log(`Player Two: ${playerTwo.characterSelected}`)
+        characters[button.id] = {name, button, faction, morality};
+        playerOne.characterSelected = characters.luke;
+        playerTwo.characterSelected = characters.vader;
+    });
+
+    function assignCharacter(character) {
+      if (character.morality === "good") {
+        if (playerOne.characterSelected) {
+            playerOne.characterSelected.button.classList.remove('border-2', 'border-gold', 'rounded');
+        }
+        playerOne.characterSelected = character;
+        character.button.classList.add('border-2', 'border-gold', 'rounded');
+        console.log(`Player One Character Selected: ${JSON.stringify(playerOne.characterSelected)}`)
+      } else {
+        if (playerTwo.characterSelected) {
+            playerTwo.characterSelected.button.classList.remove('border-2', 'border-gold', 'rounded');
+        }
+        playerTwo.characterSelected = character;
+        character.button.classList.add('border-2', 'border-gold', 'rounded');
+        console.log(`Player Two Character Selected: ${JSON.stringify(playerTwo.characterSelected)}`)
+      }
     }
 
-    for (let character in jediCharacters) {
-        jediCharacters[character].addEventListener("click", () => assignCharacter(character))
+    for (let character in characters) {
+        characters[character].button.addEventListener("click", () => {
+          assignCharacter(characters[character]);
+        });
     }
-
-    for (let character in heroCharacters) {
-        heroCharacters[character].addEventListener("click", () => assignCharacter(character))
-    }
-
-    for (let character in sithCharacters) {
-        sithCharacters[character].addEventListener("click", () => assignCharacter(character))
-    }
-
-    for (let character in villainCharacters) {
-        villainCharacters[character].addEventListener("click", () => assignCharacter(character))
-    }
-
+    
+    console.log(JSON.stringify(characters));
+    console.log(`Player One Character: ${JSON.stringify(playerOne.characterSelected)}`);
+    console.log(`Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`);
   })();
 });

@@ -3,6 +3,9 @@ module.exports = {
   content: ["./*.{html,js}"],
   theme: {
     extend: {
+    	colors: {
+    		'gold': '#FFD700'
+    	},
     	fontFamily: {
     		jedi: ['star-jedi', 'sans-serif'],
     		jedihollow: ['star-jedi-hollow', 'sans-serif'],
