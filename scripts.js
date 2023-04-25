@@ -34,12 +34,15 @@ let assignPlayModeModule = (function () {
         playerVsComputerButton.classList.add("hidden");
         console.log(`Play mode set to player vs player`);
       }
-      return playMode;
     }
 
     playerVsPlayerButton.addEventListener("click", setPlayMode);
     playerVsComputerButton.addEventListener("click", setPlayMode);
-    return playMode;
+    return {
+        getPlayMode: function() {
+          return playMode;
+        },
+      };
   })();
 
   let jediHeroToggleModule = (function () {
@@ -115,27 +118,28 @@ let assignPlayModeModule = (function () {
         name = `${button.id}`;
         faction = "jedi";
         morality = "good";
-        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+        image = `./imgs/${button.id}.png`
       } else if (heroButtons.includes(button)) {
         name = `${button.id}`;
         faction = "hero";
         morality = "good";
-        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+        image = `./imgs/${button.id}.png`
       } else if (sithButtons.includes(button)) {
         name = `${button.id}`;
         faction = "sith";
         morality = "evil";
-        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+        image = `./imgs/${button.id}.png`
       } else if (villainButtons.includes(button)) {
         name = `${button.id}`;
         faction = "villain";
         morality = "evil";
-        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+        image = `./imgs/${button.id}.png`
       }
       characters[button.id] = { name, button, faction, morality, image };
-      playerOne.characterSelected = characters.luke;
-      playerTwo.characterSelected = characters.vader;
     });
+
+    playerOne.characterSelected = characters.luke;
+    playerTwo.characterSelected = characters.vader;
 
     function assignCharacter(character) {
       if (character.morality === "good") {
@@ -185,7 +189,7 @@ let assignPlayModeModule = (function () {
       `Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`
     );
 
-    return playerOne, playerTwo;
+    return {playerOne, playerTwo};
   })();
 
   let playModule = (function (playerOne, playerTwo) {
@@ -210,23 +214,46 @@ let assignPlayModeModule = (function () {
             playerOneTurn.classList.add("hidden");
             playerTwoTurn.classList.remove("hidden");
             gridElement.forEach((element) => {
-                element.classList.remove("hover:bg-blue-900");
-                element.classList.add("hover:bg-red-900");
+                if (element.classList.contains("hover:bg-blue-900")) {
+                    element.classList.remove("hover:bg-blue-900");
+                    element.classList.add("hover:bg-red-900");
+                }
             });
             playerTurn = "playerTwo";
         } else {
             playerOneTurn.classList.remove("hidden");
             playerTwoTurn.classList.add("hidden");
             gridElement.forEach((element) => {
-                element.classList.add("hover:bg-blue-900");
-                element.classList.remove("hover:bg-red-900");
+                if (element.classList.contains("hover:bg-red-900")) {
+                    element.classList.add("hover:bg-blue-900");
+                    element.classList.remove("hover:bg-red-900");
+                }
             });
             playerTurn = "playerOne";
         }
-    }    
+    }
+    
+    function addPlayerImageToGrid ({playerOne, playerTwo}, element) {
+        if (playerTurn === "playerOne") {
+            const img = document.createElement("img");
+            img.src = playerOne.characterSelected.image;
+            img.alt = playerOne.characterSelected.name;
+            element.appendChild(img);
+            element.classList.remove("hover:bg-blue-900");
+        } else {
+            const img = document.createElement("img");
+            img.src = playerTwo.characterSelected.image;
+            img.alt = playerTwo.characterSelected.name;
+            element.appendChild(img);
+            element.classList.remove("hover:bg-red-900");
+        }
+    }
 
     gridElement.forEach((element) => {
-        element.addEventListener("click", switchPlayerTurn);
-    });
-  })();
+        element.addEventListener("click", () => {
+            addPlayerImageToGrid({playerOne, playerTwo}, element);
+            switchPlayerTurn();
+        });
+      });
+  })(characterSelectModule.playerOne, characterSelectModule.playerTwo);
 });
