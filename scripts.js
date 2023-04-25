@@ -16,19 +16,8 @@
 // -who's turn it is
 
 document.addEventListener("DOMContentLoaded", function () {
-  let playerOne = {
-    characterSelected: undefined,
-  };
 
-  let playerTwo = {
-    characterSelected: undefined,
-  };
-
-  let playerComputer = {
-    characterSelected: undefined,
-  };
-
-  let assignPlayModeModule = (function () {
+let assignPlayModeModule = (function () {
     let playerVsPlayerButton = document.getElementById("player-vs-player");
     let playerVsComputerButton = document.getElementById("player-vs-computer");
     let playMode = "playerVsPlayer";
@@ -45,10 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
         playerVsComputerButton.classList.add("hidden");
         console.log(`Play mode set to player vs player`);
       }
+      return playMode;
     }
 
     playerVsPlayerButton.addEventListener("click", setPlayMode);
     playerVsComputerButton.addEventListener("click", setPlayMode);
+    return playMode;
   })();
 
   let jediHeroToggleModule = (function () {
@@ -98,63 +89,143 @@ document.addEventListener("DOMContentLoaded", function () {
   })();
 
   let characterSelectModule = (function () {
+    let playerOne = {};
+    let playerTwo = {};
+    let playerComputer = {};
+
+
     const characterButtons = document.querySelectorAll(".character");
-    const jediButtons = Array.from(document.querySelectorAll("#jedi-characters button"));
-    const heroButtons = Array.from(document.querySelectorAll("#hero-characters button"));
-    const sithButtons = Array.from(document.querySelectorAll("#sith-characters button"));
-    const villainButtons = Array.from(document.querySelectorAll("#villain-characters button"));
+    const jediButtons = Array.from(
+      document.querySelectorAll("#jedi-characters button")
+    );
+    const heroButtons = Array.from(
+      document.querySelectorAll("#hero-characters button")
+    );
+    const sithButtons = Array.from(
+      document.querySelectorAll("#sith-characters button")
+    );
+    const villainButtons = Array.from(
+      document.querySelectorAll("#villain-characters button")
+    );
 
     const characters = {};
     characterButtons.forEach((button) => {
-        let name, faction, morality;
-        if (jediButtons.includes(button)) {
-            name = `${button.id}`;
-            faction = "jedi";
-            morality = "good";
-        } else if (heroButtons.includes(button)) {
-            name = `${button.id}`;
-            faction = "hero";
-            morality = "good";
-        } else if (sithButtons.includes(button)) {
-            name = `${button.id}`;
-            faction = "sith";
-            morality = "evil";
-        } else if (villainButtons.includes(button)) {
-            name = `${button.id}`;
-            faction = "villain";
-            morality = "evil";
-        }
-        characters[button.id] = {name, button, faction, morality};
-        playerOne.characterSelected = characters.luke;
-        playerTwo.characterSelected = characters.vader;
+      let name, faction, morality;
+      if (jediButtons.includes(button)) {
+        name = `${button.id}`;
+        faction = "jedi";
+        morality = "good";
+        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+      } else if (heroButtons.includes(button)) {
+        name = `${button.id}`;
+        faction = "hero";
+        morality = "good";
+        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+      } else if (sithButtons.includes(button)) {
+        name = `${button.id}`;
+        faction = "sith";
+        morality = "evil";
+        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+      } else if (villainButtons.includes(button)) {
+        name = `${button.id}`;
+        faction = "villain";
+        morality = "evil";
+        image = `<img src="./imgs/${button.id}.png" alt="${button.id}"`
+      }
+      characters[button.id] = { name, button, faction, morality, image };
+      playerOne.characterSelected = characters.luke;
+      playerTwo.characterSelected = characters.vader;
     });
 
     function assignCharacter(character) {
       if (character.morality === "good") {
         if (playerOne.characterSelected) {
-            playerOne.characterSelected.button.classList.remove('border-2', 'border-gold', 'rounded');
+          playerOne.characterSelected.button.classList.remove(
+            "border-2",
+            "border-gold",
+            "rounded"
+          );
         }
         playerOne.characterSelected = character;
-        character.button.classList.add('border-2', 'border-gold', 'rounded');
-        console.log(`Player One Character Selected: ${JSON.stringify(playerOne.characterSelected)}`)
+        character.button.classList.add("border-2", "border-gold", "rounded");
+        console.log(
+          `Player One Character Selected: ${JSON.stringify(
+            playerOne.characterSelected
+          )}`
+        );
       } else {
         if (playerTwo.characterSelected) {
-            playerTwo.characterSelected.button.classList.remove('border-2', 'border-gold', 'rounded');
+          playerTwo.characterSelected.button.classList.remove(
+            "border-2",
+            "border-gold",
+            "rounded"
+          );
         }
         playerTwo.characterSelected = character;
-        character.button.classList.add('border-2', 'border-gold', 'rounded');
-        console.log(`Player Two Character Selected: ${JSON.stringify(playerTwo.characterSelected)}`)
+        character.button.classList.add("border-2", "border-gold", "rounded");
+        console.log(
+          `Player Two Character Selected: ${JSON.stringify(
+            playerTwo.characterSelected
+          )}`
+        );
       }
     }
 
     for (let character in characters) {
-        characters[character].button.addEventListener("click", () => {
-          assignCharacter(characters[character]);
-        });
+      characters[character].button.addEventListener("click", () => {
+        assignCharacter(characters[character]);
+      });
     }
-    
+
     console.log(JSON.stringify(characters));
-    console.log(`Player One Character: ${JSON.stringify(playerOne.characterSelected)}`);
-    console.log(`Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`);
+    console.log(
+      `Player One Character: ${JSON.stringify(playerOne.characterSelected)}`
+    );
+    console.log(
+      `Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`
+    );
+
+    return playerOne, playerTwo;
+  })();
+
+  let playModule = (function (playerOne, playerTwo) {
+    const playButton = document.getElementById("play");
+    const gameBoardSubContainer = document.getElementById("gameboard-sub-container");
+    const characterSelectSubContainer = document.getElementById("character-select-sub-container");
+    const playerOneTurn = document.getElementById("player-one-turn");
+    const playerTwoTurn = document.getElementById("player-two-turn");
+    const gridElement = document.querySelectorAll(".grid-element");
+    let playerTurn = "playerOne";
+    
+
+    function showGameBoard() {
+        gameBoardSubContainer.classList.remove("hidden");
+        characterSelectSubContainer.classList.add("hidden");
+    }
+
+    playButton.addEventListener("click", showGameBoard);
+
+    function switchPlayerTurn () {
+        if (playerTurn === "playerOne") {
+            playerOneTurn.classList.add("hidden");
+            playerTwoTurn.classList.remove("hidden");
+            gridElement.forEach((element) => {
+                element.classList.add("hover:bg-blue-900");
+                element.classList.remove("hover:bg-red-900");
+            });
+        }
+        if (playerTurn === "playerTwo") {
+            playerOneTurn.classList.remove("hidden");
+            playerTwoTurn.classList.add("hidden");
+            gridElement.forEach((element) => {
+                element.classList.remove("hover:bg-blue-900");
+                element.classList.add("hover:bg-red-900");
+            });
+        }
+    }    
+
+    gridElement.forEach((gridElement) => {
+        gridElement.addEventListener("click", switchPlayerTurn);
+    });
   })();
 });
