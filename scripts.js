@@ -108,9 +108,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const villainButtons = Array.from(
         document.querySelectorAll("#villain-characters button")
         );
+        const highlight =  ["border-2", "border-gold", "rounded"];
 
         characterButtons.forEach((button) => {
-        let name, faction, morality;
+        let name, faction, morality, image;
         if (jediButtons.includes(button)) {
             name = `${button.id}`;
             faction = "jedi";
@@ -139,30 +140,29 @@ document.addEventListener("DOMContentLoaded", function () {
         playerTwo.characterSelected = characters.vader;
 
         function assignCharacter(character) {
-            const highlight =  ["border-2", "border-gold", "rounded"]
-        if (character.morality === "good") {
-            if (playerOne.characterSelected) {
-            playerOne.characterSelected.button.classList.remove(...highlight);
+            if (character.morality === "good") {
+                if (playerOne.characterSelected) {
+                playerOne.characterSelected.button.classList.remove(...highlight);
+                }
+                playerOne.characterSelected = character;
+                character.button.classList.add(...highlight);
+                console.log(
+                `Player One Character Selected: ${JSON.stringify(
+                    playerOne.characterSelected
+                )}`
+                );
+            } else {
+                if (playerTwo.characterSelected) {
+                playerTwo.characterSelected.button.classList.remove(...highlight);
+                }
+                playerTwo.characterSelected = character;
+                character.button.classList.add(...highlight);
+                console.log(
+                `Player Two Character Selected: ${JSON.stringify(
+                    playerTwo.characterSelected
+                )}`
+                );
             }
-            playerOne.characterSelected = character;
-            character.button.classList.add(...highlight);
-            console.log(
-            `Player One Character Selected: ${JSON.stringify(
-                playerOne.characterSelected
-            )}`
-            );
-        } else {
-            if (playerTwo.characterSelected) {
-            playerTwo.characterSelected.button.classList.remove(...highlight);
-            }
-            playerTwo.characterSelected = character;
-            character.button.classList.add(...highlight);
-            console.log(
-            `Player Two Character Selected: ${JSON.stringify(
-                playerTwo.characterSelected
-            )}`
-            );
-        }
         }
 
         for (let character in characters) {
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`
         );
 
-        return { playerOne, playerTwo };                        
+        return { playerOne, playerTwo, characters, highlight};                        
     })();
 
     let playModule = (function (playerOne, playerTwo) {
@@ -313,11 +313,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return {
                 checkWinner: checkWinner,
                 initiateWinState: initiateWinState,
-                updateScoreBoard: updateScoreBoard
+                updateScoreBoard: updateScoreBoard,
             };
         })();
 
-        let playerMovementModule = (function (checkWinner, initiateWinState) {
+        let playerMovementModule = (function (checkWinner, initiateWinState, updateScoreBoard) {
             let winner;
 
             function switchPlayerTurn() {
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const img = document.createElement("img");
                     img.src = playerOne.characterSelected.image;
                     img.alt = playerOne.characterSelected.name;
-                    img.class = ("character-image");
+                    img.className = ("character-image");
                     element.appendChild(img);
                     element.classList.remove("hover:bg-blue-900");
                     gameBoard[element.id] = "playerOne";
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const img = document.createElement("img");
                     img.src = playerTwo.characterSelected.image;
                     img.alt = playerTwo.characterSelected.name;
-                    img.class = ("character-image");
+                    img.className = ("character-image");
                     element.appendChild(img);
                     element.classList.remove("hover:bg-red-900");
                     gameBoard[element.id] = "playerTwo";
@@ -376,46 +376,63 @@ document.addEventListener("DOMContentLoaded", function () {
                             initiateWinState(playerOne, playerTwo, winner);
                         } else {
                             switchPlayerTurn();
-                            return element;
                         }
                     });
                 });
             })();
-        })(checkWinnerModule.checkWinner, checkWinnerModule.initiateWinState, checkWinnerModule.updateScoreBoard);
-    })(characterSelectModule.playerOne, characterSelectModule.playerTwo);
+        })(checkWinnerModule.checkWinner, checkWinnerModule.initiateWinState, checkWinnerModule.updateScoreBoard,);
+        return {
+            gridElement:gridElement,
+            playerTurn: playerTurn,
+            gameBoardSubContainer:gameBoardSubContainer,
+            characterSelectSubContainer:characterSelectSubContainer,
+            gameBoard: gameBoard,
+        };
+    })(characterSelectModule.playerOne, characterSelectModule.playerTwo,);
 
-    let resetModule = (function () {
+    let resetModule = (function (playerOne, playerTwo, characterSelectSubContainer, characters, highlight) {
         const resetButton = document.getElementById("reset-button");
         resetButton.addEventListener("click", reset);
-
-        function reset () {
-            (function clearCharacterSelection () {
+    
+        function reset() {
+            (function clearCharacterSelection (highlight) {
+                playerOne.characterSelected.button.classList.remove(highlight);
+                playerTwo.characterSelected.button.classList.remove(highlight);
                 playerOne.characterSelected = characters.luke;
                 playerTwo.characterSelected = characters.vader;
-            })();
-
+                playerOne.characterSelected.button.classList.add(highlight);
+                playerTwo.characterSelected.button.classList.add(highlight);
+                console.log(playerOne.characterSelected);
+                console.log(playerTwo.characterSelected);
+            })(highlight);
+    
             (function clearGameBoard () {
-                const characterImage = element.querySelector('.character-image');
-
-                gameBoard = {
+                const characterImages = document.querySelectorAll('.character-image');
+    
+                playModule.gameBoard = {
                     A1: '-', A2: '-', A3: '-',
                     B1: '-', B2: '-', B3: '-',
                     C1: '-', C2: '-', C3: '-'
                 };
-
-                gridElement.forEach((element) => {
-                    if (characterImage) {
-                        element.removeChild(characterImage);
-                    }
-                });
-
-                playerTurn = "playerOne";
+    
+                characterImages.forEach((characterImage) => {
+                    characterImage.parentElement.removeChild(characterImage);
+                  });
+    
+                playModule.playerTurn = "playerOne";
+                console.log("Gameboard cleared.")
             })();
-
+    
             (function showCharacterSelect () {
-                gameBoardSubContainer.classList.add("hidden");
+                const winScreens = document.querySelectorAll(".win-screen");
+                winScreens.forEach((element) => {
+                    element.classList.add("hidden");
+                });
                 characterSelectSubContainer.classList.remove("hidden");
+                console.log("Character Selection Shown")
             })();
+            console.log("Play Reset");
         }
-    })();
+    })(characterSelectModule.playerOne, characterSelectModule.playerTwo, playModule.characterSelectSubContainer, characterSelectModule.characters, characterSelectModule.highlight, playModule.playerTurn, playModule.gameBoard,);
+    
 });
