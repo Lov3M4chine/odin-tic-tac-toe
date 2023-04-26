@@ -1,21 +1,12 @@
-// Player
-// -score
-// -character selection
-// -moves made
-
-// Computer Player
-// -Copy of Player
-// -AI
-
-// Gameboard
-// -grid tiles
-
-// Gamestate
-// -score
-// -moves made
-// -who's turn it is
-
 document.addEventListener("DOMContentLoaded", function () {
+    const gameBoardSubContainer = document.getElementById(
+        "gameboard-sub-container"
+        );
+    const characterSelectSubContainer = document.getElementById(
+        "character-select-sub-container"
+        );
+    const gridElement = document.querySelectorAll(".grid-element");
+
     let assignPlayModeModule = (function () {
         let playerVsPlayerButton = document.getElementById("player-vs-player");
         let playerVsComputerButton = document.getElementById("player-vs-computer");
@@ -190,17 +181,121 @@ document.addEventListener("DOMContentLoaded", function () {
         return { playerOne, playerTwo, characters, highlight};                        
     })();
 
+    let winnerModule = (function () {
+        const winCombinations = [
+            ["A1", "A2", "A3"],
+            ["B1", "B2", "B3"],
+            ["C1", "C2", "C3"],
+            ["A1", "B1", "C1"],
+            ["A2", "B2", "C2"],
+            ["A3", "B3", "C3"],
+            ["A1", "B2", "C3"],
+            ["A3", "B2", "C1"]
+        ];
+    
+        function createGameBoardArrays(gameBoard) {
+            const gameBoardArrayPlayerOne = [];
+            const gameBoardArrayPlayerTwo = [];
+    
+            for (let key in gameBoard) {
+                if (gameBoard[key] === "playerOne") {
+                    gameBoardArrayPlayerOne.push(key);
+                } else if (gameBoard[key] === "playerTwo") {
+                    gameBoardArrayPlayerTwo.push(key);
+                }
+            }
+    
+            return { gameBoardArrayPlayerOne, gameBoardArrayPlayerTwo };
+        }
+    
+        function compareGameBoardArrays(gameBoardArrayPlayerOne, gameBoardArrayPlayerTwo) {
+            for (let combo of winCombinations) {
+                if (combo.every((item) => gameBoardArrayPlayerOne.includes(item))) {
+                    return "playerOne"
+                } else if (combo.every((item) => gameBoardArrayPlayerTwo.includes(item))) {
+                    return "playerTwo"
+                }
+            }
+            return null;
+        };
+    
+        function checkWinner(gameBoard, count) {
+            const { gameBoardArrayPlayerOne, gameBoardArrayPlayerTwo } = createGameBoardArrays(gameBoard);
+            const winner = compareGameBoardArrays(gameBoardArrayPlayerOne, gameBoardArrayPlayerTwo);
+    
+            if (winner) {
+                return winner;
+            } else if (count === 9) {
+                return "tie";
+            } else {
+                return null;
+            }
+        }
+    
+        function initiateWinState(playerOne, playerTwo, winner) {
+            if (winner === "tie") {
+                tieWinner();
+            } else {
+            const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;
+            if (winningPlayer.characterSelected.morality === "good") {
+                winningPlayer.score += 1
+                goodWinner();
+            } else if (winningPlayer.characterSelected.morality === "evil") {
+                winningPlayer.score += 1
+                evilWinner();
+            }
+            }
+        }
+
+        function displayWinner(id, imageSources, gameBoardSubContainer) {
+            const randomImageIndex = Math.floor(Math.random() * imageSources.length);
+            const targetElement = document.getElementById(id);
+            gameBoardSubContainer.classList.add("hidden");
+            targetElement.classList.remove("hidden");
+          
+            const img = document.createElement("img");
+            img.src = imageSources[randomImageIndex];
+            img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
+            targetElement.appendChild(img);
+          }
+
+        function tieWinner() {
+        const tieImages = [
+            "./imgs/tie-one.jpg",
+            "./imgs/tie-two.jpg",
+            "./imgs/tie-three.jpg",
+        ];
+        displayWinner("tie", tieImages, gameBoardSubContainer);
+        }
+        
+        function goodWinner() {
+        const goodWinImages = [
+            "./imgs/good-win-one.jpg",
+            "./imgs/good-win-two.jpg",
+            "./imgs/good-win-three.jpg",
+        ];
+        displayWinner("good-win", goodWinImages, gameBoardSubContainer);
+        }
+        
+        function evilWinner() {
+        const evilWinImages = [
+            "./imgs/evil-win-one.jpg",
+            "./imgs/evil-win-two.jpg",
+            "./imgs/evil-win-three.jpg",
+        ];
+        displayWinner("evil-win", evilWinImages, gameBoardSubContainer);
+        }
+
+        return {
+            checkWinner: checkWinner,
+            initiateWinState: initiateWinState,
+        };
+    })();
+
     let playModule = (function (playerOne, playerTwo) {
         const playButton = document.getElementById("play");
-        const gameBoardSubContainer = document.getElementById(
-        "gameboard-sub-container"
-        );
-        const characterSelectSubContainer = document.getElementById(
-        "character-select-sub-container"
-        );
         const playerOneTurn = document.getElementById("player-one-turn");
         const playerTwoTurn = document.getElementById("player-two-turn");
-        const gridElement = document.querySelectorAll(".grid-element");
         let playerTurn = "playerOne";
         const gameBoard = {
             A1: '-', A2: '-', A3: '-',
@@ -216,117 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         playButton.addEventListener("click", showGameBoard);
 
-        let checkWinnerModule = (function () {
-            function checkWinner(gameBoard, count) {
-                const winCombinations = [
-                ["A1", "A2", "A3"],
-                ["B1", "B2", "B3"],
-                ["C1", "C2", "C3"],
-                ["A1", "B1", "C1"],
-                ["A2", "B2", "C2"],
-                ["A3", "B3", "C3"],
-                ["A1", "B2", "C3"],
-                ["A3", "B2", "C1"]
-                ];
-            
-                for (let combination of winCombinations) {
-                    if (
-                        gameBoard[combination[0]] !== "-" &&
-                        gameBoard[combination[0]] === gameBoard[combination[1]] &&
-                        gameBoard[combination[0]] === gameBoard[combination[2]]
-                    ) { 
-                        return gameBoard[combination[0]];
-                    }
-                }
-        
-                if (count === 9) {
-                    return "tie";
-                }
-        
-                return null;
-            }
-
-            function initiateWinState(playerOne, playerTwo, winner) {
-                if (winner === "tie") {
-                    tieWinner();
-                } else {
-                const winningPlayer = winner === "playerOne" ? playerOne : playerTwo;
-                if (winningPlayer.characterSelected.morality === "good") {
-                    winningPlayer.score += 1
-                    goodWinner();
-                } else if (winningPlayer.characterSelected.morality === "evil") {
-                    winningPlayer.score += 1
-                    evilWinner();
-                }
-                }
-            }
-
-            function tieWinner () {
-                const tieImages = [
-                    "./imgs/tie-one.jpg",
-                    "./imgs/tie-two.jpg",
-                    "./imgs/tie-three.jpg",
-                ];   
-                const randomImageIndex = Math.floor(Math.random() * tieImages.length);
-                const tie = document.getElementById("tie");
-                gameBoardSubContainer.classList.add("hidden");
-                tie.classList.remove("hidden");      
-                const img = document.createElement("img");
-                img.src = tieImages[randomImageIndex];
-                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
-                tie.appendChild(img);
-            }
-
-            function goodWinner() {
-                const goodWinImages = [
-                    "./imgs/good-win-one.jpg",
-                    "./imgs/good-win-two.jpg",
-                    "./imgs/good-win-three.jpg",
-                    ];  
-                const randomImageIndex = Math.floor(Math.random() * goodWinImages.length);
-                const goodWin = document.getElementById("good-win");
-                gameBoardSubContainer.classList.add("hidden");
-                goodWin.classList.remove("hidden");
-                const img = document.createElement("img");
-                img.src = goodWinImages[randomImageIndex];
-                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
-                goodWin.appendChild(img);
-                
-            }
-
-            function evilWinner() {
-                const evilWinImages = [
-                    "./imgs/evil-win-one.jpg",
-                    "./imgs/evil-win-two.jpg",
-                    "./imgs/evil-win-three.jpg",
-                ];   
-                const randomImageIndex = Math.floor(Math.random() * evilWinImages.length);
-                const evilWin = document.getElementById("evil-win");
-                gameBoardSubContainer.classList.add("hidden");
-                evilWin.classList.remove("hidden");
-                const img = document.createElement("img");
-                img.src = evilWinImages[randomImageIndex];
-                img.classList = "m-4 mt-2 max-h-screen w-auto border-4 border-transparent rounded-xl";
-                evilWin.appendChild(img);
-            }
-
-            function updateScoreBoard() {
-                const goodScore = document.getElementById('good-score');
-                const evilScore = document.getElementById('evil-score');
-            
-                goodScore.textContent = `light-side score: ${playerOne.score}`;
-                evilScore.textContent = `dark-side score: ${playerTwo.score}`;
-            }
-
-            return {
-                checkWinner: checkWinner,
-                initiateWinState: initiateWinState,
-                updateScoreBoard: updateScoreBoard,
-            };
-        })();
-
-        let playerMovementModule = (function (checkWinner, initiateWinState, updateScoreBoard) {
-            let winner;
+        let playerMovementModule = (function (checkWinner, initiateWinState,) {
 
             function switchPlayerTurn() {
                 if (playerTurn === "playerOne") {
@@ -375,31 +360,52 @@ document.addEventListener("DOMContentLoaded", function () {
                 count += 1;
             }
 
-            (function addEventListenersToGrid() {
+            function updateScoreBoard() {
+                const goodScore = document.getElementById('good-score');
+                const evilScore = document.getElementById('evil-score');      
+                goodScore.textContent = `light-side score: ${playerOne.score}`;
+                evilScore.textContent = `dark-side score: ${playerTwo.score}`;
+            }
+
+            function initializeWinnerCheck() {
+                const winner = checkWinner(gameBoard, count);            
+                if (winner) {
+                    initiateWinState(playerOne, playerTwo, winner);
+                    updateScoreBoard();
+                } else {
+                    switchPlayerTurn();
+                }
+            }   
+
+            function gridElementClick() {
+                initializePlayerMove({ playerOne, playerTwo }, this);
+                initializeWinnerCheck();
+                this.removeEventListener("click", gridElementClick);
+            }
+
+            function addEventListenersToGrid() {
                 gridElement.forEach((element) => {
-                    element.addEventListener("click", () => {
-                        initializePlayerMove({ playerOne, playerTwo }, element);
-                        winner = checkWinner(gameBoard, count);            
-                        if (winner) {
-                            initiateWinState(playerOne, playerTwo, winner);
-                            updateScoreBoard();
-                        } else {
-                            switchPlayerTurn();
-                        }
-                    });
+                    element.addEventListener("click", gridElementClick);
                 });
-            })();
-        })(checkWinnerModule.checkWinner, checkWinnerModule.initiateWinState, checkWinnerModule.updateScoreBoard,);
+            };
+
+            addEventListenersToGrid();
+
+            return {
+                addEventListenersToGrid,
+            };
+
+        })(winnerModule.checkWinner, winnerModule.initiateWinState,);
         return {
             gridElement:gridElement,
             playerTurn: playerTurn,
-            gameBoardSubContainer:gameBoardSubContainer,
-            characterSelectSubContainer:characterSelectSubContainer,
             gameBoard: gameBoard,
+            addEventListenersToGrid: playerMovementModule.addEventListenersToGrid,
+            count: count
         };
     })(characterSelectModule.playerOne, characterSelectModule.playerTwo,);
 
-    let resetModule = (function (gridElement, playerOne, playerTwo, characterSelectSubContainer, characters, highlight, sithToggle, jediToggle, gameBoard) {
+    let resetModule = (function (gridElement, playerOne, playerTwo, characters, highlight, sithToggle, jediToggle, gameBoard, addEventListenersToGrid, count) {
         const resetButton = document.querySelectorAll(".reset-button");
         resetButton.forEach((element) => {
             element.addEventListener("click", reset);
@@ -414,8 +420,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 characterSelectModule.playerTwo.characterSelected = characters.vader;
                 characterSelectModule.playerOne.characterSelected.button.classList.add(...highlight);
                 characterSelectModule.playerTwo.characterSelected.button.classList.add(...highlight);
-                sithVillainToggleModule.sithToggle();
-                jediHeroToggleModule.jediToggle();
+                sithToggle();
+                jediToggle();
                 console.log(playerOne.characterSelected);
                 console.log(playerTwo.characterSelected);
             })();
@@ -440,18 +446,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Gameboard cleared.");
                 console.log(playModule.gameBoard);
                 console.log(playModule.playerTurn);
+
+                addEventListenersToGrid();
+                count = 0;
             })();
     
             (function showCharacterSelect () {
                 const winScreens = document.querySelectorAll(".win-screen");
+                
                 winScreens.forEach((element) => {
                     element.classList.add("hidden");
                 });
+
+                const winScreenImgs = document.querySelectorAll(".win-screen img");
+                winScreenImgs.forEach((imgElement) => {
+                  imgElement.remove();
+                });
+
                 characterSelectSubContainer.classList.remove("hidden");
                 console.log("Character Selection Shown")
             })();
             console.log("Play Reset");
+
         }
-    })(playModule.gridElement, characterSelectModule.playerOne, characterSelectModule.playerTwo, playModule.characterSelectSubContainer, characterSelectModule.characters, characterSelectModule.highlight, sithVillainToggleModule.sithToggle, jediHeroToggleModule.heroToggle, playModule.gameBoard);
+    })(playModule.gridElement, characterSelectModule.playerOne, characterSelectModule.playerTwo, characterSelectModule.characters, characterSelectModule.highlight, sithVillainToggleModule.sithToggle, jediHeroToggleModule.jediToggle, playModule.gameBoard, playModule.addEventListenersToGrid, playModule.count,);
     
 });
