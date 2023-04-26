@@ -65,6 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         jediButton.addEventListener("click", jediToggle);
         heroButton.addEventListener("click", heroToggle);
+        return {
+            jediToggle: jediToggle,
+            heroToggle: heroToggle
+        }
     })();
 
     let sithVillainToggleModule = (function () {
@@ -88,6 +92,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         sithButton.addEventListener("click", sithToggle);
         villainButton.addEventListener("click", villainToggle);
+        return {
+            sithToggle: sithToggle,
+            villainToggle: villainToggle
+        }
     })();
 
     let characterSelectModule = (function () {
@@ -374,6 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         winner = checkWinner(gameBoard, count);            
                         if (winner) {
                             initiateWinState(playerOne, playerTwo, winner);
+                            updateScoreBoard();
                         } else {
                             switchPlayerTurn();
                         }
@@ -390,37 +399,47 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     })(characterSelectModule.playerOne, characterSelectModule.playerTwo,);
 
-    let resetModule = (function (playerOne, playerTwo, characterSelectSubContainer, characters, highlight) {
-        const resetButton = document.getElementById("reset-button");
-        resetButton.addEventListener("click", reset);
+    let resetModule = (function (gridElement, playerOne, playerTwo, characterSelectSubContainer, characters, highlight, sithToggle, jediToggle, gameBoard) {
+        const resetButton = document.querySelectorAll(".reset-button");
+        resetButton.forEach((element) => {
+            element.addEventListener("click", reset);
+        });
+        
     
         function reset() {
-            (function clearCharacterSelection (highlight) {
-                playerOne.characterSelected.button.classList.remove(highlight);
-                playerTwo.characterSelected.button.classList.remove(highlight);
-                playerOne.characterSelected = characters.luke;
-                playerTwo.characterSelected = characters.vader;
-                playerOne.characterSelected.button.classList.add(highlight);
-                playerTwo.characterSelected.button.classList.add(highlight);
+            (function clearCharacterSelection () {
+                characterSelectModule.playerOne.characterSelected.button.classList.remove(...highlight);
+                characterSelectModule.playerTwo.characterSelected.button.classList.remove(...highlight);
+                characterSelectModule.playerOne.characterSelected = characters.luke;
+                characterSelectModule.playerTwo.characterSelected = characters.vader;
+                characterSelectModule.playerOne.characterSelected.button.classList.add(...highlight);
+                characterSelectModule.playerTwo.characterSelected.button.classList.add(...highlight);
+                sithVillainToggleModule.sithToggle();
+                jediHeroToggleModule.jediToggle();
                 console.log(playerOne.characterSelected);
                 console.log(playerTwo.characterSelected);
-            })(highlight);
+            })();
     
             (function clearGameBoard () {
                 const characterImages = document.querySelectorAll('.character-image');
     
-                playModule.gameBoard = {
-                    A1: '-', A2: '-', A3: '-',
-                    B1: '-', B2: '-', B3: '-',
-                    C1: '-', C2: '-', C3: '-'
-                };
+                for (let key in gameBoard) {
+                    gameBoard[key] = '-';
+                }
     
                 characterImages.forEach((characterImage) => {
                     characterImage.parentElement.removeChild(characterImage);
-                  });
+                });
+
+                gridElement.forEach((element) => {
+                  element.classList.add("hover:bg-blue-900");
+                  element.classList.remove("hover:bg-red-900");
+                });
     
                 playModule.playerTurn = "playerOne";
-                console.log("Gameboard cleared.")
+                console.log("Gameboard cleared.");
+                console.log(playModule.gameBoard);
+                console.log(playModule.playerTurn);
             })();
     
             (function showCharacterSelect () {
@@ -433,6 +452,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })();
             console.log("Play Reset");
         }
-    })(characterSelectModule.playerOne, characterSelectModule.playerTwo, playModule.characterSelectSubContainer, characterSelectModule.characters, characterSelectModule.highlight, playModule.playerTurn, playModule.gameBoard,);
+    })(playModule.gridElement, characterSelectModule.playerOne, characterSelectModule.playerTwo, playModule.characterSelectSubContainer, characterSelectModule.characters, characterSelectModule.highlight, sithVillainToggleModule.sithToggle, jediHeroToggleModule.heroToggle, playModule.gameBoard);
     
 });
