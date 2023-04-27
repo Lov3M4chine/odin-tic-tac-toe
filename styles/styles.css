@@ -748,6 +748,10 @@ video {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 
+.bg-\[url\(\'imgs\/stars\.png\'\)\] {
+  background-image: url('imgs/stars.png');
+}
+
 .from-blue-800 {
   --tw-gradient-from: #1e40af var(--tw-gradient-from-position);
   --tw-gradient-from-position:  ;
