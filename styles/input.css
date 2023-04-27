@@ -48,3 +48,6 @@
        1px 1px 0 #000;
   }
   
+  #main-container {
+    min-width: 450px;
+  }
