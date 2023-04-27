@@ -36,12 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
         playMode = "playerVsComputer";
         playerVsComputerButton.classList.remove("hidden");
         playerVsPlayerButton.classList.add("hidden");
-        console.log(`Play mode set to player vs computer`);
       } else {
         playMode = "playerVsPlayer";
         playerVsPlayerButton.classList.remove("hidden");
         playerVsComputerButton.classList.add("hidden");
-        console.log(`Play mode set to player vs player`);
       }
     }
 
@@ -164,22 +162,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         playerOne.characterSelected = character;
         character.button.classList.add(...highlight);
-        console.log(
-          `Player One Character Selected: ${JSON.stringify(
-            playerOne.characterSelected
-          )}`
-        );
       } else {
         if (playerTwo.characterSelected) {
           playerTwo.characterSelected.button.classList.remove(...highlight);
         }
         playerTwo.characterSelected = character;
         character.button.classList.add(...highlight);
-        console.log(
-          `Player Two Character Selected: ${JSON.stringify(
-            playerTwo.characterSelected
-          )}`
-        );
       }
     }
 
@@ -188,14 +176,6 @@ document.addEventListener("DOMContentLoaded", function () {
         assignCharacter(characters[character]);
       });
     }
-
-    console.log(JSON.stringify(characters));
-    console.log(
-      `Player One Character: ${JSON.stringify(playerOne.characterSelected)}`
-    );
-    console.log(
-      `Player Two Character: ${JSON.stringify(playerTwo.characterSelected)}`
-    );
 
     return { playerOne, playerTwo, characters, highlight };
   })();
@@ -327,12 +307,44 @@ document.addEventListener("DOMContentLoaded", function () {
 // Module responsible for initilizing play area, player movement, updating gameBoard, and invoking the winModule functions.
   let playModule = (function (playerOne, playerTwo) {
     const playButton = document.getElementById("play");
+    
     function showGameBoard() {
-      gameBoardSubContainer.classList.remove("hidden");
-      characterSelectSubContainer.classList.add("hidden");
-    }
+        gameBoardSubContainer.classList.remove("hidden");
+        characterSelectSubContainer.classList.add("hidden");
+        }
 
-    playButton.addEventListener("click", showGameBoard);
+    let soundFXModule = (function() {
+        const playButtonSoundclip = new Audio('./sfx/jump-to-lightspeed.mp3');
+        
+        function playButtonSound () {
+            playButtonSoundclip.currentTime = 0;
+            playButtonSoundclip.play();
+        }
+
+        const cantinaMusic = { 
+            cantinaMusicClip: new Audio(`./sfx/cantina-music.mp3`),
+            playCantinaMusic: 
+            function playCantinaMusic() {
+                cantinaMusic.cantinaMusicClip.loop = true;
+                cantinaMusic.cantinaMusicClip.play();
+            },
+
+            pauseCantinaMusic: 
+            function pauseCantinaMusic () {
+                cantinaMusic.cantinaMusicClip.pause();
+                cantinaMusic.cantinaMusicClip.currentTime = 0;
+            }
+        }
+
+        cantinaMusic.playCantinaMusic();
+        playButton.addEventListener("click", cantinaMusic.pauseCantinaMusic);
+        playButton.addEventListener("click", playButtonSound);
+        playButtonSoundclip.addEventListener("ended", function () {
+            showGameBoard();
+        })
+
+        return {cantinaMusic: cantinaMusic};
+    })();    
 
     let playerMovementModule = (function (checkWinner, initiateWinState) {
       function switchPlayerTurn() {
@@ -368,7 +380,6 @@ document.addEventListener("DOMContentLoaded", function () {
           element.appendChild(img);
           element.classList.remove("hover:bg-blue-900");
           playState.gameBoard[element.id] = "playerOne";
-          console.log(playState.gameBoard);
         } else {
           const img = document.createElement("img");
           img.src = playerTwo.characterSelected.image;
@@ -377,7 +388,6 @@ document.addEventListener("DOMContentLoaded", function () {
           element.appendChild(img);
           element.classList.remove("hover:bg-red-900");
           playState.gameBoard[element.id] = "playerTwo";
-          console.log(playState.gameBoard);
         }
         playState.count += 1;
       }
@@ -420,6 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return {
       gridElement: gridElement,
       addEventListenersToGrid: playerMovementModule.addEventListenersToGrid,
+      cantinaMusic: soundFXModule.cantinaMusic
     };
   })(characterSelectModule.playerOne, characterSelectModule.playerTwo);
 
@@ -432,7 +443,8 @@ document.addEventListener("DOMContentLoaded", function () {
     highlight,
     sithToggle,
     jediToggle,
-    addEventListenersToGrid
+    addEventListenersToGrid,
+    cantinaMusic
   ) {
     const resetButton = document.querySelectorAll(".reset-button");
     resetButton.forEach((element) => {
@@ -440,6 +452,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function reset() {
+
+        (function playResetSoundAndWaitForEnd() {
+            const resetSoundclip = new Audio(`./sfx/join-us.wav`);
+            resetSoundclip.play();
+            resetSoundclip.addEventListener("ended", function () {
+              cantinaMusic.cantinaMusicClip.play();
+              showCharacterSelect();
+            });
+        })();
+
       (function clearCharacterSelection() {
         characterSelectModule.playerOne.characterSelected.button.classList.remove(
           ...highlight
@@ -457,8 +479,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         sithToggle();
         jediToggle();
-        console.log(playerOne.characterSelected);
-        console.log(playerTwo.characterSelected);
       })();
 
       (function clearGameBoard(playState) {
@@ -483,12 +503,9 @@ document.addEventListener("DOMContentLoaded", function () {
         addEventListenersToGrid();
         playState.count = 0;
 
-        console.log("Gameboard cleared.");
-        console.log(playState.gameBoard);
-        console.log(playState.playerTurn);
       })(playState);
 
-      (function showCharacterSelect() {
+      function showCharacterSelect() {
         const winScreens = document.querySelectorAll(".win-screen");
 
         winScreens.forEach((element) => {
@@ -501,10 +518,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         characterSelectSubContainer.classList.remove("hidden");
-        console.log("Character Selection Shown");
-      })();
-      console.log("Play Reset");
-    }
+      };
+     }
   })(
     playModule.gridElement,
     characterSelectModule.playerOne,
@@ -513,6 +528,7 @@ document.addEventListener("DOMContentLoaded", function () {
     characterSelectModule.highlight,
     sithVillainToggleModule.sithToggle,
     jediHeroToggleModule.jediToggle,
-    playModule.addEventListenersToGrid
+    playModule.addEventListenersToGrid,
+    playModule.cantinaMusic,
   );
 });
