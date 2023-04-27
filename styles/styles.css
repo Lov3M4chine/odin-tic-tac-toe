@@ -803,6 +803,10 @@ video {
   background-image: url('/imgs/good-win-one.jpg');
 }
 
+.bg-\[url\(\'\/imgs\/stars\.png\'\)\] {
+  background-image: url('/imgs/stars.png');
+}
+
 .from-blue-800 {
   --tw-gradient-from: #1e40af var(--tw-gradient-from-position);
   --tw-gradient-from-position:  ;
