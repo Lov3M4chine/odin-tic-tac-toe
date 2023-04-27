@@ -752,6 +752,14 @@ video {
   background-image: url('imgs/stars.png');
 }
 
+.bg-\[url\(\'\.\.\/imgs\/main-container-wallpaper\.jpg\'\)\] {
+  background-image: url('../imgs/main-container-wallpaper.jpg');
+}
+
+.bg-\[url\(\'\.\.\/imgs\/stars\.png\'\)\] {
+  background-image: url('../imgs/stars.png');
+}
+
 .from-blue-800 {
   --tw-gradient-from: #1e40af var(--tw-gradient-from-position);
   --tw-gradient-from-position:  ;
